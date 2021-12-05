@@ -23,6 +23,8 @@ public class Kata5P1 {
     public static void main(String[] args) {
         SelectApp app = new SelectApp();
         app.selectAll();
+        CrearTabla tabla_mail = new CrearTabla();
+        tabla_mail.createNewTable();
     }
     private static class SelectApp {
 
@@ -54,5 +56,21 @@ public class Kata5P1 {
                 }
         }
     }
+    
+    private static class CrearTabla {
+        public static void createNewTable() {
+            String url = "jdbc:sqlite:Kata5.db";
+            String sql = "CREATE TABLE IF NOT EXISTS email (\n"
+            + " id integer PRIMARY KEY AUTOINCREMENT,\n"
+            + " mail text NOT NULL);";
+            try (Connection conn = DriverManager.getConnection(url);
+                Statement stmt = conn.createStatement()) {
+                stmt.execute(sql);
+                System.out.println("Tabla creada");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+}
 
 }
