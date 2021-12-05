@@ -7,9 +7,11 @@ package kata5p1;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  *
@@ -22,9 +24,14 @@ public class Kata5P1 {
      */
     public static void main(String[] args) {
         SelectApp app = new SelectApp();
-        app.selectAll();
-        CrearTabla tabla_mail = new CrearTabla();
-        tabla_mail.createNewTable();
+        //app.selectAll();
+        //CrearTabla tabla_mail = new CrearTabla();
+        //tabla_mail.createNewTable();
+        String ruta = "email.txt";
+        List<String> correos = MailListReader.read(ruta);
+        for (String correo : correos){
+            app.insert(correo);
+        } 
     }
     private static class SelectApp {
 
@@ -55,6 +62,20 @@ public class Kata5P1 {
                     System.out.println(e.getMessage());
                 }
         }
+        
+        public void insert(String email) {
+            String sql = "INSERT INTO email(mail) VALUES(?)";
+            try (Connection conn = this.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, email);
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        
+        
     }
     
     private static class CrearTabla {
@@ -71,6 +92,6 @@ public class Kata5P1 {
                 System.out.println(e.getMessage());
             }
         }
-}
+    }
 
 }
